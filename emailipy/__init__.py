@@ -19,6 +19,7 @@ def inline_css(html, css, include_invalid=False):
                 active_declaration = node.declarations.get(declaration.name)
                 if active_declaration and active_declaration.specificity > declaration.specificity:
                     continue # skip rules with lower specificity
+
                 node.declarations[declaration.name] = declaration
                 node['style'] = _get_node_style(node)
 
