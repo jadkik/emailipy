@@ -1,0 +1,25 @@
+h1 {
+    font-size: 20px;
+    opacity: 0.8;
+}
+
+div {
+    padding: 20px;
+    font-family: serif !important;
+}
+
+.subtext {
+    padding: 10px;
+    font-size: 8px;
+    background: #FF00FF;
+}
+
+div.subtext ~ div {
+    color: #FF0000;
+    font-family: sans-serif;
+    margin: 18px;
+}
+
+* {
+    margin: 12px;
+}

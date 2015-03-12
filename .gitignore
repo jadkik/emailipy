@@ -1,0 +1,16 @@
+*.pyc
+*.wpr
+~*
+*.log
+var
+*.cache
+nohup.out
+build
+*.swp
+*.swo
+.*.un~
+.*.swp
+.coverage
+.env
+*.egg
+*.egg-info
