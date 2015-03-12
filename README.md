@@ -33,7 +33,7 @@ A command line utility for checking css for email incompatibilities.
 $ emailipy-lint
 emailipy-lint <css_file>
 
-$ ./emailipy-lint test.css
+$ emailipy-lint test.css
 Invalid Rule: h1 { opacity: 0.8; } -- Outlook 2007/10/13 | Outlook 03/Express/Mail | Yahoo! Mail | Google Gmail
 Invalid Rule: div { margin: 12px; } -- Outlook.com
 Invalid Rule: .subtext { background: #FF00FF; } -- Outlook 2007/10/13 | Outlook 03/Express/Mail | Outlook.com | Yahoo! Mail | Google Gmail
