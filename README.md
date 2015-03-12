@@ -9,7 +9,6 @@ html = u'<div class="test">stuff</div>'
 css = ".test { font-size: 14px; }"
 
 emailipy.inline_css(html, css)
-
 >>> u'<div class="test" style="font-size:14px;"">stuff</div>'
 ```
 
@@ -23,7 +22,6 @@ import emailipy
 css = ".test { opacity: 0.8; }"
 
 emailipy.lint_css(css)
-
 >>> ['Invalid Rule: .test { opacity: 0.8; } -- Outlook 2007/10/13 | Outlook 03/Express/Mail | Yahoo! Mail | Google Gmail']
 ```
 
