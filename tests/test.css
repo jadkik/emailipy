@@ -14,7 +14,7 @@ div {
     background: #FF00FF;
 }
 
-div.subtext ~ div {
+div.subtext ~ div:last-child {
     color: #FF0000;
     font-family: sans-serif;
     margin: 18px;

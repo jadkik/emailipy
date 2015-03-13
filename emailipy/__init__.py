@@ -1,33 +1,35 @@
 import tinycss
 import rules
 
-from bs4 import BeautifulSoup
+from lxml import etree
+from lxml.cssselect import CSSSelector
 
 # specificity is represented as a single int at the moment
 # so to account for !important we need to make a big int
 IMPORTANT_MULTIPLIER = 9000
 
 def inline_css(html, css, strip_unsupported_css=True):
-    dom = BeautifulSoup(html)
+    node_declarations = {}
+    dom = etree.fromstring(html)
     css_rules = tinycss.make_parser().parse_stylesheet(css).rules
     for rule in css_rules:
         css_selector = rule.selector.as_css()
-        for node in dom.select(css_selector):
+        for node in CSSSelector(css_selector)(dom):
             for declaration in rule.declarations:
 
                 if strip_unsupported_css and _get_clients_without_support(declaration):
                     continue # skip invalid rules
 
                 declaration.specificity = _selector_specificity(css_selector, declaration.priority)
-                node.declarations = node.declarations or {}
-                active_declaration = node.declarations.get(declaration.name)
+                node_declarations.setdefault(node, {})
+                active_declaration = node_declarations.get(node, {}).get(declaration.name)
                 if active_declaration and active_declaration.specificity > declaration.specificity:
                     continue # skip rules with lower specificity
 
-                node.declarations[declaration.name] = declaration
-                node['style'] = _get_node_style(node)
+                node_declarations[node][declaration.name] = declaration
+                node.set('style', _get_node_style(node_declarations[node]))
 
-    return dom.prettify()
+    return etree.tostring(dom, pretty_print=True)
 
 
 def lint_css(css):
@@ -47,9 +49,9 @@ def lint_css(css):
 
     return violations
 
-def _get_node_style(node):
+def _get_node_style(declarations):
     stringify_value = lambda value: " ".join([v.as_css() for v in value])
-    style = " ".join(["{}: {};".format(declaration.name, stringify_value(declaration.value)) for declaration in node.declarations.values()])
+    style = " ".join(["{}: {};".format(declaration.name, stringify_value(declaration.value)) for declaration in declarations.values()])
     return style
 
 
