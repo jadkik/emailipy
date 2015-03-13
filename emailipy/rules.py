@@ -1,7 +1,7 @@
 from clients import OUTLOOK, OUTLOOK_EXPRESS, IPHONE, OUTLOOK_COM, APPLE_MAIL, YAHOO, GMAIL, ANDROID
 
 # https://www.campaignmonitor.com/css/
-INVALID_RULES = {
+INVALID_PROPERTIES = {
     # text & font
     "text-overflow": [OUTLOOK],
     "text-shadow": [OUTLOOK, OUTLOOK_EXPRESS, GMAIL],

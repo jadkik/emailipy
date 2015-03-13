@@ -3,7 +3,11 @@ import rules
 
 from bs4 import BeautifulSoup
 
-def inline_css(html, css, include_invalid=False):
+# specificity is represented as a single int at the moment
+# so to account for !important we need to make a big int
+IMPORTANT_MULTIPLIER = 9000
+
+def inline_css(html, css, strip_unsupported_css=True):
     dom = BeautifulSoup(html)
     css_rules = tinycss.make_parser().parse_stylesheet(css).rules
     for rule in css_rules:
@@ -11,7 +15,7 @@ def inline_css(html, css, include_invalid=False):
         for node in dom.select(css_selector):
             for declaration in rule.declarations:
 
-                if not include_invalid and _get_clients_without_support(declaration):
+                if strip_unsupported_css and _get_clients_without_support(declaration):
                     continue # skip invalid rules
 
                 declaration.specificity = _selector_specificity(css_selector, declaration.priority)
@@ -55,10 +59,10 @@ def _selector_specificity(selector, priority):
     element_weight = len([a for a in selector.split(" ") if not (a.startswith(".") or a.startswith("#"))])
     weight = element_weight + class_weight * 10 + element_weight * id_weight * 100
     if priority:
-        weight *= 90000
+        weight *= IMPORTANT_MULTIPLIER
     return weight
 
 
-# https://www.campaignmonitor.com/css/
+# uses https://www.campaignmonitor.com/css/
 def _get_clients_without_support(declaration):
-    return rules.INVALID_RULES.get(declaration.name)
+    return rules.INVALID_PROPERTIES.get(declaration.name)

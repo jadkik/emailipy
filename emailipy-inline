@@ -19,8 +19,8 @@ if __name__ == "__main__":
             with open(args[i]) as f:
                 files[extension] = f.read()
 
-        include_invalid = len(args) >= 3 and "--allow_invalid_css" in args
-        html = inline_css(*files.values(), include_invalid=include_invalid)
+        strip_unsupported_css = not (len(args) >= 3 and "--allow_invalid_css" in args)
+        html = inline_css(*files.values(), strip_unsupported_css=strip_unsupported_css)
         print html
     else:
         print "emailipy-inline <html_file> <css_file>"

@@ -12,7 +12,7 @@ emailipy.inline_css(html, css)
 >>> u'<div class="test" style="font-size:14px;"">stuff</div>'
 ```
 
-By default the `inline_css` function will strip out css that will not work on all email clients. You can allow all css to slip through with the `include_invalid` flag.
+By default the `inline_css` function will strip out css that will not work on all email clients. You can allow all css to slip through with the `strip_unsupported_css` flag set to `False`.
 
 You can also use the css lint function on its own.
 
