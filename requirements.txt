@@ -1,3 +1,4 @@
+BeautifulSoup # required for lxml.html.soupparser
 click
 cssselect
 lxml

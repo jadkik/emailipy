@@ -2,6 +2,7 @@ import tinycss
 
 from lxml import etree
 from lxml.cssselect import CSSSelector
+from lxml.html import soupparser
 
 from linter import get_clients_without_support
 
@@ -12,7 +13,11 @@ IMPORTANT_MULTIPLIER = 9000
 
 def inline_css(html, css, strip_unsupported_css=True):
     node_declarations = {}
-    dom = etree.fromstring(html)
+    try:
+        dom = etree.fromstring(html)
+    except etree.XMLSyntaxError:
+        dom = soupparser.fromstring(html)
+
     css_rules = tinycss.make_parser().parse_stylesheet(css).rules
     for rule in css_rules:
         css_selector = rule.selector.as_css()
