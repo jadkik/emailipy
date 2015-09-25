@@ -11,13 +11,14 @@ from linter import get_clients_without_support
 # so to account for !important we need to make a big int
 IMPORTANT_MULTIPLIER = 9000
 
-def inline_css(html, css, strip_unsupported_css=True, remove_classes=False):
+def inline_css(html, css, strip_unsupported_css=True, remove_classes=False, pretty_print=True):
     """Produces html output with css styles inlined.
 
     :param html: the original html
     :param css: the css rules to apply to the html
     :param strip_unsupported_css: a flag for stripping invalid email css
     :param remove_classes: a flag for stripping class attributes from the output
+    :param pretty_print: toggle pretty printing of resulting html
     """
     node_declarations = {}
     try:
@@ -52,7 +53,7 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False):
         if remove_classes and "class" in node.attrib:
             node.attrib.pop('class')
 
-    return etree.tostring(dom, pretty_print=True)
+    return etree.tostring(dom, pretty_print=pretty_print)
 
 
 def _get_node_style(declarations, inline_styles):
