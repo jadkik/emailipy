@@ -72,3 +72,51 @@ class TestInliner(unittest.TestCase):
         expected = '<span><div class="pink" style="font-size: 1em;">test</div><div style="font-size: 3em;">t2</div></span>'
         result = inline_css(html, css, pretty_print=False)
         self.assertEqual(expected, result)
+
+    def test_invalid_rule(self):
+        """Verify email styles are stripped"""
+        html = '<div class="pink">test</div>'
+        css = '.pink { opacity: 0.8; }'
+        expected = '<div class="pink">test</div>'
+        result = inline_css(html, css, pretty_print=False)
+        self.assertEqual(expected, result)
+
+    def test_invalid_rule_not_stripped(self):
+        """Make sure we can turn off unsupported css stripping"""
+        html = '<div class="pink">test</div>'
+        css = '.pink { opacity: 0.8; }'
+        expected = '<div class="pink" style="opacity: 0.8;">test</div>'
+        result = inline_css(html, css, strip_unsupported_css=False, pretty_print=False)
+        self.assertEqual(expected, result)
+
+    def test_id_rule(self):
+        """Verify classes are applied"""
+        html = '<div id="pink">test</div>'
+        css = '#pink { font-size: 1em; }'
+        expected = '<div id="pink" style="font-size: 1em;">test</div>'
+        result = inline_css(html, css, pretty_print=False)
+        self.assertEqual(expected, result)
+
+    def test_wildcard_rule(self):
+        """Verify element rules are applied"""
+        html = '<span><div class="pink">test</div><div>t2</div></span>'
+        css = 'span * { font-size: 1em; }'
+        expected = '<span><div class="pink" style="font-size: 1em;">test</div><div style="font-size: 1em;">t2</div></span>'
+        result = inline_css(html, css, pretty_print=False)
+        self.assertEqual(expected, result)
+
+    def test_child_rule(self):
+        """Verify element rules are applied"""
+        html = '<span><div class="pink">test</div><div>t2</div></span>'
+        css = 'span > div { font-size: 1em; }'
+        expected = '<span><div class="pink" style="font-size: 1em;">test</div><div style="font-size: 1em;">t2</div></span>'
+        result = inline_css(html, css, pretty_print=False)
+        self.assertEqual(expected, result)
+
+    def test_sibling_rule(self):
+        """Verify element rules are applied"""
+        html = '<span><div class="pink">test</div><div>t2</div></span>'
+        css = 'span > div.pink ~ * { font-size: 1em; }'
+        expected = '<span><div class="pink">test</div><div style="font-size: 1em;">t2</div></span>'
+        result = inline_css(html, css, pretty_print=False)
+        self.assertEqual(expected, result)
