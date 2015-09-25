@@ -11,7 +11,7 @@ from linter import get_clients_without_support
 # so to account for !important we need to make a big int
 IMPORTANT_MULTIPLIER = 9000
 
-def inline_css(html, css, strip_unsupported_css=True):
+def inline_css(html, css, strip_unsupported_css=True, remove_classes=False):
     node_declarations = {}
     try:
         dom = etree.fromstring(html)
@@ -34,16 +34,41 @@ def inline_css(html, css, strip_unsupported_css=True):
                     continue # skip rules with lower specificity
 
                 node_declarations[node][declaration.name] = declaration
-                node.set('style', _get_node_style(node_declarations[node]))
+
+    for node, declarations in node_declarations.iteritems():
+        inline_styles = node.get('style', '')
+        inline_css = _get_node_style(declarations, inline_styles)
+        node.set('style', inline_css)
+        if remove_classes and "class" in node.attrib:
+            node.attrib.pop('class')
 
     return etree.tostring(dom, pretty_print=True)
 
 
-def _get_node_style(declarations):
+def _get_node_style(declarations, inline_styles):
+    inline_styles = _parse_style_attribute(inline_styles)
     stringify_value = lambda value: " ".join([v.as_css() for v in value])
-    style = " ".join(["{}: {};".format(declaration.name, stringify_value(declaration.value)) for declaration in declarations.values()])
+    style = " ".join(["{}: {};".format(declaration.name, stringify_value(declaration.value)) \
+                     for declaration in declarations.values() \
+                     if declaration.name not in inline_styles])
+    if inline_styles:
+        style = style + " " + " ".join(["{}: {};".format(name, value) \
+                                        for (name, value) in inline_styles.iteritems()])
     return style
 
+def _parse_style_attribute(inline_styles):
+    inline_css = {}
+    inline_styles = inline_styles.split(";")
+    for rule in inline_styles:
+        rule = rule.split(":")
+        if len(rule) != 2:
+            continue
+        name, value = rule
+        name = name.strip()
+        value = value.strip()
+        if name and value:
+            inline_css[name] = value
+    return inline_css
 
 def _selector_specificity(selector, priority):
     class_weight = selector.count(".")
