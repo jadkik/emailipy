@@ -37,6 +37,8 @@ From within the cloned repo run:
 $ pipsi install .
 ```
 
+If you don't need the command line tools, then you can go the usual route and install with `pip`.
+
 ## Usage
 
 To use it:
