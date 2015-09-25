@@ -29,7 +29,7 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False):
 
                 declaration.specificity = _selector_specificity(css_selector, declaration.priority)
                 node_declarations.setdefault(node, {})
-                active_declaration = node_declarations.get(node, {}).get(declaration.name)
+                active_declaration = node_declarations[node].get(declaration.name)
                 if active_declaration and active_declaration.specificity > declaration.specificity:
                     continue # skip rules with lower specificity
 
