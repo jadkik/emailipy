@@ -64,7 +64,9 @@ def _get_node_style(declarations, inline_styles):
                      for declaration in declarations.values() \
                      if declaration.name not in inline_styles])
     if inline_styles:
-        style = style + " " + " ".join(["{}: {};".format(name, value) \
+        if style:
+            style = style + " "
+        style = style + " ".join(["{}: {};".format(name, value) \
                                         for (name, value) in inline_styles.iteritems()])
     return style
 
