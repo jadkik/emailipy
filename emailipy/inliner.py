@@ -12,10 +12,18 @@ from linter import get_clients_without_support
 IMPORTANT_MULTIPLIER = 9000
 
 def inline_css(html, css, strip_unsupported_css=True, remove_classes=False):
+    """Produces html output with css styles inlined.
+
+    :param html: the original html
+    :param css: the css rules to apply to the html
+    :param strip_unsupported_css: a flag for stripping invalid email css
+    :param remove_classes: a flag for stripping class attributes from the output
+    """
     node_declarations = {}
     try:
         dom = etree.fromstring(html)
     except etree.XMLSyntaxError:
+        # fall back on the soup parser if we don't have valid XML
         dom = soupparser.fromstring(html)
 
     css_rules = tinycss.make_parser().parse_stylesheet(css).rules
@@ -25,13 +33,15 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False):
             for declaration in rule.declarations:
 
                 if strip_unsupported_css and get_clients_without_support(declaration):
-                    continue # skip invalid rules
+                    # skip invalid rules
+                    continue
 
                 declaration.specificity = _selector_specificity(css_selector, declaration.priority)
                 node_declarations.setdefault(node, {})
                 active_declaration = node_declarations[node].get(declaration.name)
                 if active_declaration and active_declaration.specificity > declaration.specificity:
-                    continue # skip rules with lower specificity
+                    # skip rules with lower specificity
+                    continue
 
                 node_declarations[node][declaration.name] = declaration
 
@@ -46,6 +56,7 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False):
 
 
 def _get_node_style(declarations, inline_styles):
+    """Given css and inline styles determine the value of the style attribute."""
     inline_styles = _parse_style_attribute(inline_styles)
     stringify_value = lambda value: " ".join([v.as_css() for v in value])
     style = " ".join(["{}: {};".format(declaration.name, stringify_value(declaration.value)) \
@@ -57,6 +68,7 @@ def _get_node_style(declarations, inline_styles):
     return style
 
 def _parse_style_attribute(inline_styles):
+    """Parse the style attribute value into a dict of css declarations."""
     inline_css = {}
     inline_styles = inline_styles.split(";")
     for rule in inline_styles:
@@ -71,6 +83,14 @@ def _parse_style_attribute(inline_styles):
     return inline_css
 
 def _selector_specificity(selector, priority):
+    """Calculate an integer representing selector specificity.
+
+    The higher the number the more specific. This is a simplification of the
+    spec, but works pretty well in practice.
+
+    :param selector: the css selector
+    :param priority: boolean that is set if the rule has the `!important` flag.
+    """
     class_weight = selector.count(".")
     id_weight = selector.count("#")
     element_weight = len([a for a in selector.split(" ") if not (a.startswith(".") or a.startswith("#"))])
