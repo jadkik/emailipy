@@ -10,7 +10,7 @@ install_requires = [l.split('#')[0].strip()
 setup(
     name='emailipy',
     packages = find_packages(),
-    version='0.1.0',
+    version='1.0.0',
     url='https://github.com/Parsely/emailipy',
     description='Inlines css into html to make it safe for email.',
     install_requires=install_requires,
