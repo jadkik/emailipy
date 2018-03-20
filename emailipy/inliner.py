@@ -4,7 +4,7 @@ from lxml import etree
 from lxml.cssselect import CSSSelector
 from lxml.html import soupparser
 
-from linter import get_clients_without_support
+from .linter import get_clients_without_support
 
 
 # specificity is represented as a single int at the moment
@@ -46,7 +46,7 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False, pret
 
                 node_declarations[node][declaration.name] = declaration
 
-    for node, declarations in node_declarations.iteritems():
+    for node, declarations in node_declarations.items():
         inline_styles = node.get('style', '')
         inline_css = _get_node_style(declarations, inline_styles)
         node.set('style', inline_css)
@@ -61,13 +61,13 @@ def _get_node_style(declarations, inline_styles):
     inline_styles = _parse_style_attribute(inline_styles)
     stringify_value = lambda value: " ".join([v.as_css() for v in value])
     style = " ".join(["{}: {};".format(declaration.name, stringify_value(declaration.value)) \
-                     for declaration in declarations.values() \
+                     for declaration in list(declarations.values()) \
                      if declaration.name not in inline_styles])
     if inline_styles:
         if style:
             style = style + " "
         style = style + " ".join(["{}: {};".format(name, value) \
-                                        for (name, value) in inline_styles.iteritems()])
+                                        for (name, value) in inline_styles.items()])
     return style
 
 def _parse_style_attribute(inline_styles):
