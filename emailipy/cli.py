@@ -2,8 +2,8 @@ import click
 import os
 import sys
 
-from linter import lint_css
-from inliner import inline_css
+from .linter import lint_css
+from .inliner import inline_css
 
 
 @click.command()
@@ -28,7 +28,7 @@ def inline(html_file, css_file, allow_invalid_css, remove_classes):
     for extension, f in [("html", html_file), ("css", css_file)]:
         files[extension] = f.read()
 
-    html = inline_css(*files.values(),
+    html = inline_css(*list(files.values()),
                       strip_unsupported_css=(not allow_invalid_css),
                       remove_classes=remove_classes)
     click.echo(html)

@@ -7,17 +7,17 @@ for extension in ["html", "css"]:
         src[extension] = f.read()
 
 def header(text):
-    print "\n", text, "\n", "=" * len(text)
+    print("\n", text, "\n", "=" * len(text))
 
 header("Original CSS")
-print src["css"]
+print(src["css"])
 
 header("Original HTML")
-print src["html"]
+print(src["html"])
 
 header("Results of CSS Linting")
 for violation in emailipy.lint_css(src["css"]):
-    print violation
+    print(violation)
 
 header("HTML w/ inlined CSS")
-print emailipy.inline_css(*src.values())
+print(emailipy.inline_css(*list(src.values())))
