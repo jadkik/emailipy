@@ -20,6 +20,14 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False, pret
     :param remove_classes: a flag for stripping class attributes from the output
     :param pretty_print: toggle pretty printing of resulting html
     """
+
+    # cast as inputs as string if not already string type
+    # as python3 does not see byteslist as strings
+    if not isinstance(html, str):
+        html = str(html)
+    if not isinstance(css, str):
+        css = str(css)
+
     node_declarations = {}
     try:
         dom = etree.fromstring(html)
