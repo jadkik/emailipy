@@ -24,9 +24,9 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False, pret
     # cast as inputs as string if not already string type
     # as python3 does not see byteslist as strings
     if not isinstance(html, str):
-        html = str(html)
+        html = html.decode("utf-8")
     if not isinstance(css, str):
-        css = str(css)
+        css = css.decode("utf-8")
 
     node_declarations = {}
     try:
@@ -61,7 +61,7 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False, pret
         if remove_classes and "class" in node.attrib:
             node.attrib.pop('class')
 
-    return etree.tostring(dom, pretty_print=pretty_print)
+    return etree.tostring(dom, pretty_print=pretty_print).decode("utf-8")
 
 
 def _get_node_style(declarations, inline_styles):
