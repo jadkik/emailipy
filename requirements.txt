@@ -1,4 +1,4 @@
-beautifulsoup4 # required for lxml.html.soupparser
+BeautifulSoup # required for lxml.html.soupparser
 click
 cssselect
 lxml

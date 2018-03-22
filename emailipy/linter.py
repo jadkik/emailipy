@@ -1,5 +1,5 @@
 import tinycss
-from . import rules
+import rules
 
 
 def lint_css(css):
