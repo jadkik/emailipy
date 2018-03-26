@@ -53,7 +53,8 @@ def inline_css(html, css, strip_unsupported_css=True, remove_classes=False, pret
         if remove_classes and "class" in node.attrib:
             node.attrib.pop('class')
 
-    return etree.tostring(dom, pretty_print=pretty_print)
+    res = etree.tostring(dom, pretty_print=pretty_print)
+    return res.decode("utf-8")
 
 
 def _get_node_style(declarations, inline_styles):
